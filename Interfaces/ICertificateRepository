@@ -1,0 +1,18 @@
+using InterneManagementSystem.Models;
+
+namespace InterneManagementSystem.Interfaces
+{
+    public interface ICertificateRepository
+    {
+
+        Task<IEnumerable<Certificate>> GetAllCertificatesAsync();
+
+        Task<Certificate?> GetCertificateByIdAsync(int id);
+
+        Task<Certificate> AddCertificateAsync(Certificate certificate);
+
+        Task<Certificate?> UpdateCertificateAsync(Certificate certificate);
+
+        Task<bool> DeleteCertificateAsync(int id);
+    }
+}
