@@ -1,0 +1,71 @@
+using InterneManagementSystem.Interfaces;
+using InterneManagementSystem.Models;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+
+namespace InterneManagementSystem.Controllers
+{
+    [Route("api/[controller]")]
+    [ApiController]
+    public class UniversitiesController : ControllerBase
+    {
+        private readonly IUniversityRepository _repository;
+
+        public UniversitiesController(IUniversityRepository repository)
+        {
+            _repository = repository;
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetUniversities()
+        {
+            var universities = await _repository.GetAllUniversitiesAsync();
+
+            return Ok(universities);
+        }
+
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetUniversity(int id)
+        {
+            var university = await _repository.GetUniversityByIdAsync(id);
+
+            if (university == null)
+                return NotFound();
+
+            return Ok(university);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> AddUniversity(University university)
+        {
+            var newUniversity = await _repository.AddUniversityAsync(university);
+
+            return Ok(newUniversity);
+        }
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateUniversity(int id, University university)
+        {
+            if (id != university.UniversityId)
+                return BadRequest();
+
+            var updatedUniversity = await _repository.UpdateUniversityAsync(university);
+
+            if (updatedUniversity == null)
+                return NotFound();
+
+            return Ok(updatedUniversity);
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteUniversity(int id)
+        {
+            var deleted = await _repository.DeleteUniversityAsync(id);
+
+            if (!deleted)
+                return NotFound();
+
+            return Ok("University Deleted Successfully");
+        }
+    }
+}
