@@ -1,0 +1,17 @@
+using InterneManagementSystem.Models;
+
+namespace InterneManagementSystem.Interfaces
+{
+    public interface IPerformanceRepository
+    {
+        Task<IEnumerable<PerformanceEvaluation>> GetAllPerformanceAsync();
+
+        Task<PerformanceEvaluation?> GetPerformanceByIdAsync(int id);
+
+        Task<PerformanceEvaluation> AddPerformanceAsync(PerformanceEvaluation performance);
+
+        Task<PerformanceEvaluation?> UpdatePerformanceAsync(PerformanceEvaluation performance);
+
+        Task<bool> DeletePerformanceAsync(int id);
+    }
+}
