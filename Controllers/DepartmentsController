@@ -1,0 +1,72 @@
+using InterneManagementSystem.Interfaces;
+using InterneManagementSystem.Models;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+
+namespace InterneManagementSystem.Controllers
+{
+    [Route("api/[controller]")]
+    [ApiController]
+    public class DepartmentsController : ControllerBase
+    {
+
+        private readonly IDepartmentRepository _repository;
+
+        public DepartmentsController(IDepartmentRepository repository)
+        {
+            _repository = repository;
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetDepartments()
+        {
+            var departments = await _repository.GetAllDepartmentsAsync();
+
+            return Ok(departments);
+        }
+
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetDepartment(int id)
+        {
+            var department = await _repository.GetDepartmentByIdAsync(id);
+
+            if (department == null)
+                return NotFound();
+
+            return Ok(department);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> AddDepartment(Department department)
+        {
+            var newDepartment = await _repository.AddDepartmentAsync(department);
+
+            return Ok(newDepartment);
+        }
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateDepartment(int id, Department department)
+        {
+            if (id != department.DepartmentId)
+                return BadRequest();
+
+            var updatedDepartment = await _repository.UpdateDepartmentAsync(department);
+
+            if (updatedDepartment == null)
+                return NotFound();
+
+            return Ok(updatedDepartment);
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteDepartment(int id)
+        {
+            var deleted = await _repository.DeleteDepartmentAsync(id);
+
+            if (!deleted)
+                return NotFound();
+
+            return Ok("Department Deleted Successfully");
+        }
+    }
+}
