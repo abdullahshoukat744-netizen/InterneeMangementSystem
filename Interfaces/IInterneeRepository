@@ -1,0 +1,17 @@
+using InterneManagementSystem.Models;
+
+namespace InterneManagementSystem.Interfaces
+{
+    public interface IInterneeRepository
+    {
+        Task<IEnumerable<Internee>> GetAllInterneesAsync();
+
+        Task<Internee?> GetInterneeByIdAsync(int id);
+
+        Task<Internee> AddInterneeAsync(Internee internee);
+
+        Task<Internee?> UpdateInterneeAsync(Internee internee);
+
+        Task<bool> DeleteInterneeAsync(int id);
+    }
+}
