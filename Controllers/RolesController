@@ -1,0 +1,72 @@
+using InterneManagementSystem.Interfaces;
+using InterneManagementSystem.Models;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+
+namespace InterneManagementSystem.Controllers
+{
+    [Route("api/[controller]")]
+    [ApiController]
+    public class RolesController : ControllerBase
+    {
+        private readonly IRoleRepository _repository;
+
+        public RolesController(IRoleRepository repository)
+        {
+            _repository = repository;
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetRoles()
+        {
+            var roles = await _repository.GetAllRolesAsync();
+
+            return Ok(roles);
+        }
+
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetRole(int id)
+        {
+            var role = await _repository.GetRoleByIdAsync(id);
+
+            if (role == null)
+                return NotFound();
+
+            return Ok(role);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> AddRole(Role role)
+        {
+            var newRole = await _repository.AddRoleAsync(role);
+
+            return Ok(newRole);
+        }
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateRole(int id, Role role)
+        {
+            if (id != role.RoleId)
+                return BadRequest();
+
+            var updated = await _repository.UpdateRoleAsync(role);
+
+            if (updated == null)
+                return NotFound();
+
+            return Ok(updated);
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteRole(int id)
+        {
+            var deleted = await _repository.DeleteRoleAsync(id);
+
+            if (!deleted)
+                return NotFound();
+
+            return Ok("Role Deleted Successfully");
+        }
+
+    }
+}
