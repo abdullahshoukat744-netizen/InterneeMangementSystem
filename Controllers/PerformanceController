@@ -1,0 +1,68 @@
+using InterneManagementSystem.Interfaces;
+using InterneManagementSystem.Models;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+
+namespace InterneManagementSystem.Controllers
+{
+    [Route("api/[controller]")]
+    [ApiController]
+    public class PerformanceController : ControllerBase
+    {
+        private readonly IPerformanceRepository _repository;
+
+        public PerformanceController(IPerformanceRepository repository)
+        {
+            _repository = repository;
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetPerformance()
+        {
+            return Ok(await _repository.GetAllPerformanceAsync());
+        }
+
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetPerformance(int id)
+        {
+            var performance = await _repository.GetPerformanceByIdAsync(id);
+
+            if (performance == null)
+                return NotFound();
+
+            return Ok(performance);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> AddPerformance(PerformanceEvaluation performance)
+        {
+            return Ok(await _repository.AddPerformanceAsync(performance));
+        }
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdatePerformance(int id, PerformanceEvaluation performance)
+        {
+            if (id != performance.EvaluationId)
+                return BadRequest();
+
+            var updated = await _repository.UpdatePerformanceAsync(performance);
+
+            if (updated == null)
+                return NotFound();
+
+            return Ok(updated);
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeletePerformance(int id)
+        {
+            var deleted = await _repository.DeletePerformanceAsync(id);
+
+            if (!deleted)
+                return NotFound();
+
+            return Ok("Performance Deleted Successfully");
+        }
+    }
+}
+
