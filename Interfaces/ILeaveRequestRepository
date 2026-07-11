@@ -1,0 +1,17 @@
+using InterneManagementSystem.Models;
+
+namespace InterneManagementSystem.Interfaces
+{
+    public interface ILeaveRequestRepository
+    {
+        Task<IEnumerable<LeaveRequest>> GetAllLeaveRequestsAsync();
+
+        Task<LeaveRequest?> GetLeaveRequestByIdAsync(int id);
+
+        Task<LeaveRequest> AddLeaveRequestAsync(LeaveRequest leaveRequest);
+
+        Task<LeaveRequest?> UpdateLeaveRequestAsync(LeaveRequest leaveRequest);
+
+        Task<bool> DeleteLeaveRequestAsync(int id);
+    }
+}
