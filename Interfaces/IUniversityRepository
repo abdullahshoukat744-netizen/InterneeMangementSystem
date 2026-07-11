@@ -1,0 +1,17 @@
+using InterneManagementSystem.Models;
+
+namespace InterneManagementSystem.Interfaces
+{
+    public interface IUniversityRepository
+    {
+        Task<IEnumerable<University>> GetAllUniversitiesAsync();
+
+        Task<University?> GetUniversityByIdAsync(int id);
+
+        Task<University> AddUniversityAsync(University university);
+
+        Task<University?> UpdateUniversityAsync(University university);
+
+        Task<bool> DeleteUniversityAsync(int id);
+    }
+}
