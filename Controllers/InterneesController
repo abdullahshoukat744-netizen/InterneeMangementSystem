@@ -1,0 +1,71 @@
+using InterneManagementSystem.Interfaces;
+using InterneManagementSystem.Models;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+
+namespace InterneManagementSystem.Controllers
+{
+    [Route("api/[controller]")]
+    [ApiController]
+    public class InterneesController : ControllerBase
+    {
+        private readonly IInterneeRepository _repository;
+
+        public InterneesController(IInterneeRepository repository)
+        {
+            _repository = repository;
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetInternees()
+        {
+            var data = await _repository.GetAllInterneesAsync();
+            return Ok(data);
+        }
+
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetInternee(int id)
+        {
+            var internee = await _repository.GetInterneeByIdAsync(id);
+
+            if (internee == null)
+                return NotFound();
+
+            return Ok(internee);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> AddInternee(Internee internee)
+        {
+            var result = await _repository.AddInterneeAsync(internee);
+
+            return Ok(result);
+        }
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateInternee(int id, Internee internee)
+        {
+            if (id != internee.InterneeId)
+                return BadRequest();
+
+            var result = await _repository.UpdateInterneeAsync(internee);
+
+            if (result == null)
+                return NotFound();
+
+            return Ok(result);
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteInternee(int id)
+        {
+            var deleted = await _repository.DeleteInterneeAsync(id);
+
+            if (!deleted)
+                return NotFound();
+
+            return Ok("Internee Deleted Successfully");
+        }
+
+    }
+}
