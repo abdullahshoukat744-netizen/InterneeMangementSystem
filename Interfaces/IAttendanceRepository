@@ -1,0 +1,17 @@
+using InterneManagementSystem.Models;
+
+namespace InterneManagementSystem.Interfaces
+{
+    public interface IAttendanceRepository
+    {
+        Task<IEnumerable<Attendance>> GetAllAttendanceAsync();
+
+        Task<Attendance?> GetAttendanceByIdAsync(int id);
+
+        Task<Attendance> AddAttendanceAsync(Attendance attendance);
+
+        Task<Attendance?> UpdateAttendanceAsync(Attendance attendance);
+
+        Task<bool> DeleteAttendanceAsync(int id);
+    }
+}
