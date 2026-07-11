@@ -1,0 +1,70 @@
+using InterneManagementSystem.Interfaces;
+using InterneManagementSystem.Models;
+using Microsoft.EntityFrameworkCore;
+
+namespace InterneManagementSystem.Repositories
+{
+    public class AttendanceRepository : IAttendanceRepository
+    {
+
+        private readonly ImsContext _context;
+
+        public AttendanceRepository(ImsContext context)
+        {
+            _context = context;
+        }
+
+        public async Task<IEnumerable<Attendance>> GetAllAttendanceAsync()
+        {
+            return await _context.Attendances
+                .Include(a => a.Internee)
+                .ToListAsync();
+        }
+
+        public async Task<Attendance?> GetAttendanceByIdAsync(int id)
+        {
+            return await _context.Attendances
+                .Include(a => a.Internee)
+                .FirstOrDefaultAsync(a => a.AttendanceId == id);
+        }
+
+        public async Task<Attendance> AddAttendanceAsync(Attendance attendance)
+        {
+            _context.Attendances.Add(attendance);
+            await _context.SaveChangesAsync();
+            return attendance;
+        }
+
+        public async Task<Attendance?> UpdateAttendanceAsync(Attendance attendance)
+        {
+            var existing = await _context.Attendances.FindAsync(attendance.AttendanceId);
+
+            if (existing == null)
+                return null;
+
+            existing.InterneeId = attendance.InterneeId;
+            existing.AttendanceDate = attendance.AttendanceDate;
+            existing.Status = attendance.Status;
+            existing.Remarks = attendance.Remarks;
+
+            await _context.SaveChangesAsync();
+
+            return existing;
+        }
+
+        public async Task<bool> DeleteAttendanceAsync(int id)
+        {
+            var attendance = await _context.Attendances.FindAsync(id);
+
+            if (attendance == null)
+                return false;
+
+            _context.Attendances.Remove(attendance);
+
+            await _context.SaveChangesAsync();
+
+            return true;
+        }
+    
+}
+}
