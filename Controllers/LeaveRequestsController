@@ -1,0 +1,71 @@
+using InterneManagementSystem.Interfaces;
+using InterneManagementSystem.Models;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+
+namespace InterneManagementSystem.Controllers
+{
+    [Route("api/[controller]")]
+    [ApiController]
+    public class LeaveRequestsController : ControllerBase
+    {
+        private readonly ILeaveRequestRepository _repository;
+
+        public LeaveRequestsController(ILeaveRequestRepository repository)
+        {
+            _repository = repository;
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetLeaveRequests()
+        {
+            var data = await _repository.GetAllLeaveRequestsAsync();
+
+            return Ok(data);
+        }
+
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetLeaveRequest(int id)
+        {
+            var leaveRequest = await _repository.GetLeaveRequestByIdAsync(id);
+
+            if (leaveRequest == null)
+                return NotFound();
+
+            return Ok(leaveRequest);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> AddLeaveRequest(LeaveRequest leaveRequest)
+        {
+            var result = await _repository.AddLeaveRequestAsync(leaveRequest);
+
+            return Ok(result);
+        }
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateLeaveRequest(int id, LeaveRequest leaveRequest)
+        {
+            if (id != leaveRequest.LeaveRequestId)
+                return BadRequest();
+
+            var result = await _repository.UpdateLeaveRequestAsync(leaveRequest);
+
+            if (result == null)
+                return NotFound();
+
+            return Ok(result);
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteLeaveRequest(int id)
+        {
+            var deleted = await _repository.DeleteLeaveRequestAsync(id);
+
+            if (!deleted)
+                return NotFound();
+
+            return Ok("Leave Request Deleted Successfully");
+        }
+    }
+}
