@@ -1,0 +1,70 @@
+using InterneManagementSystem.Interfaces;
+using InterneManagementSystem.Models;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+
+namespace InterneManagementSystem.Controllers
+{
+    [Route("api/[controller]")]
+    [ApiController]
+    public class CertificatesController : ControllerBase
+    {
+        private readonly ICertificateRepository _repository;
+
+        public CertificatesController(ICertificateRepository repository)
+        {
+            _repository = repository;
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetCertificates()
+        {
+            return Ok(await _repository.GetAllCertificatesAsync());
+        }
+
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetCertificate(int id)
+        {
+            var certificate = await _repository.GetCertificateByIdAsync(id);
+
+            if (certificate == null)
+                return NotFound();
+
+            return Ok(certificate);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> AddCertificate(Certificate certificate)
+        {
+            var result = await _repository.AddCertificateAsync(certificate);
+
+            return Ok(result);
+        }
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateCertificate(int id, Certificate certificate)
+        {
+            if (id != certificate.CertificateId)
+                return BadRequest();
+
+            var result = await _repository.UpdateCertificateAsync(certificate);
+
+            if (result == null)
+                return NotFound();
+
+            return Ok(result);
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteCertificate(int id)
+        {
+            var deleted = await _repository.DeleteCertificateAsync(id);
+
+            if (!deleted)
+                return NotFound();
+
+            return Ok("Certificate Deleted Successfully");
+        }
+    }
+}
+
